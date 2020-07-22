@@ -13,6 +13,10 @@ const App = () => {
 
   const handleSnackBar = () => () => {
     enqueueSnackbar(notification.message, {
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "right",
+      },
       variant: notification.type,
     });
   };

@@ -1,9 +1,11 @@
 const path = require("path");
+require("es6-promise").polyfill();
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
   // Входная точка
-  entry: "./src/index.js",
+  entry: ["@babel/polyfill", "./src/index.js"],
   output: {
     // Выходной каталог
     path: path.join(__dirname, "/dist"),
@@ -38,6 +40,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
+    }),
+    new webpack.ProvidePlugin({
+      Promise: "es6-promise",
     }),
   ],
 };

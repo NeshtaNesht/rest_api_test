@@ -1,7 +1,20 @@
-import React from "react";
-import { TextField, Button, List, Toolbar } from "@material-ui/core";
+import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  List,
+  Toolbar,
+  CircularProgress,
+} from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { setNotification, setToken, setFetch, getData } from "./actions";
+import {
+  setNotification,
+  setToken,
+  setFetch,
+  fetchGetPosts,
+  fetchGetUsers,
+} from "./actions";
+import Lists from "../../ui/Lists";
 
 const Home = () => {
   const token = useSelector((state) => state.homeReducer.token);
@@ -9,12 +22,39 @@ const Home = () => {
   const posts = useSelector((state) => state.homeReducer.posts);
   const fetch = useSelector((state) => state.homeReducer.fetch);
   const dispatch = useDispatch();
+  const [tableVis, setTableVis] = useState("users");
+
+  const getData = () => {
+    getPosts();
+    getUsers();
+  };
+
+  const getPosts = (p = 0) => {
+    dispatch(fetchGetPosts(p));
+  };
+  const getUsers = (p = 0) => {
+    dispatch(fetchGetUsers(p));
+  };
+
   const controls = (
     <div>
-      {users && <Button>Пользователи</Button>}
-      {posts && <Button>Посты</Button>}
+      {users && (
+        <Button onClick={() => setTableVis("users")}>Пользователи</Button>
+      )}
+      {posts && <Button onClick={() => setTableVis("posts")}>Посты</Button>}
     </div>
   );
+
+  // Наименования заголовков для Users и ключи доступа к данным
+  const tableUsers = {
+    headersName: ["Фамилия", "Имя", "Email"],
+    keyValue: ["last_name", "first_name", "email"],
+  };
+
+  const tablePosts = {
+    headersName: ["ID", "Наименование"],
+    keyValue: ["id", "title"],
+  };
   return (
     <div style={{ textAlign: "center" }}>
       <TextField
@@ -26,14 +66,34 @@ const Home = () => {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => dispatch(getData())}
+        onClick={getData}
+        disabled={!token}
       >
         Применить
       </Button>
       <Toolbar />
-      {!fetch & !users && !posts ? null : fetch ? "loading" : controls}
+      {/* Есть запрос ? Показываем циркулярку */}
+      {fetch && (
+        <CircularProgress
+          style={{
+            position: "fixed",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      )}
+      {controls}
 
-      <List></List>
+      {users && (
+        <Lists
+          data={tableVis == "users" ? users : posts}
+          table={tableVis == "users" ? tableUsers : tablePosts}
+          onChangePage={(e, p) =>
+            tableVis === "users" ? getUsers(p) : getPosts(p)
+          }
+        />
+      )}
     </div>
   );
 };

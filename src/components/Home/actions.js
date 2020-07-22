@@ -28,10 +28,15 @@ export const setNotification = (type, message, visibility) => {
   };
 };
 
-export const setFetch = () => {
+export const fetchStarted = () => {
   return {
-    type: homeTypes.FETCH,
-    payload: !store.getState().homeReducer.fetch,
+    type: homeTypes.FETCH_START,
+  };
+};
+
+export const fetchEnded = () => {
+  return {
+    type: homeTypes.FETCH_END,
   };
 };
 
@@ -49,69 +54,79 @@ export const setPosts = (data) => {
   };
 };
 
-export const getData = () => {
+// export const getData = () => {
+//   return (dispatch) => {
+//     try {
+//       dispatch(setFetch());
+//       fetchUsers(dispatch);
+//       fetchPosts(dispatch);
+//     } finally {
+//       dispatch(setFetch());
+//     }
+//   };
+// };
+
+export const fetchGetUsers = (pageNumber = 0) => {
   return (dispatch) => {
-    try {
-      dispatch(setFetch());
-      fetchUsers(dispatch);
-      fetchPosts(dispatch);
-    } finally {
-      dispatch(setFetch());
-    }
+    dispatch(fetchStarted());
+    axios({
+      method: "GET",
+      url: `https://gorest.co.in/public-api/users?page=${pageNumber}&access-token=${
+        store.getState().homeReducer.token
+      }`,
+    })
+      .then((res) => {
+        if (res.data._meta.success === false) {
+          dispatch(
+            setNotification(
+              "error",
+              `Users fail: ${res.data._meta.code} ${res.data._meta.message}`,
+              true
+            )
+          );
+        } else if (res.data._meta.success) {
+          dispatch(setNotification("success", `Пользователи загружены`, true));
+          dispatch(setUsers(res.data));
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        dispatch(setNotification("error", e, true));
+      })
+      .finally(() => {
+        dispatch(fetchEnded());
+      });
   };
 };
-
-const fetchUsers = (dispatch) => {
-  axios({
-    method: "GET",
-    url: `https://gorest.co.in/public-api/users?access-token=${
-      store.getState().homeReducer.token
-    }`,
-  })
-    .then((res) => {
-      console.log(res);
-      if (res.data._meta.success === false) {
-        dispatch(
-          setNotification(
-            "error",
-            `Users fail: ${res.data._meta.code} ${res.data._meta.message}`,
-            true
-          )
-        );
-      } else if (res.data._meta.success) {
-        dispatch(setNotification("success", `Пользователи загружены`, true));
-        dispatch(setUsers(res.data.result));
-      }
+export const fetchGetPosts = (pageNumber) => {
+  return (dispatch) => {
+    dispatch(fetchStarted());
+    axios({
+      method: "GET",
+      url: `https://gorest.co.in/public-api/posts?page=${pageNumber}&access-token=${
+        store.getState().homeReducer.token
+      }`,
     })
-    .catch((e) => {
-      console.log(e);
-      dispatch(setNotification("error", e, true));
-    });
-};
-const fetchPosts = (dispatch) => {
-  axios({
-    method: "GET",
-    url: `https://gorest.co.in/public-api/posts?access-token=${
-      store.getState().homeReducer.token
-    }`,
-  })
-    .then((res) => {
-      console.log(res);
-      if (res.data._meta.success === false) {
-        dispatch(
-          setNotification(
-            "error",
-            `Posts fail: ${res.data._meta.code} ${res.data._meta.message}`,
-            true
-          )
-        );
-      } else if (res.data._meta.success) {
-        dispatch(setNotification("success", `Посты загружены`, true));
-        dispatch(setPosts(res.data.result));
-      }
-    })
-    .catch((e) => {
-      console.log(e);
-      dispatch(setNotification("error", e, true));
-    });
+      .then((res) => {
+        if (res.data._meta.success === false) {
+          dispatch(
+            setNotification(
+              "error",
+              `Posts fail: ${res.data._meta.code} ${res.data._meta.message}`,
+              true
+            )
+          );
+        } else if (res.data._meta.success) {
+          dispatch(setNotification("success", `Посты загружены`, true));
+          dispatch(setPosts(res.data));
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        dispatch(setNotification("error", e, true));
+      })
+      .finally(() => {
+        dispatch(fetchEnded());
+      });
+  };
 };

@@ -18,9 +18,6 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     [theme.breakpoints.up("sm")]: {},
   },
-  paper: {
-    color: theme.palette.text.secondary,
-  },
 }));
 
 const Layout = ({ children }) => {

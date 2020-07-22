@@ -1,10 +1,14 @@
 import { homeTypes } from "./constants";
+import { TextareaAutosize } from "@material-ui/core";
 
 const initialState = {
   users: null,
   posts: null,
   appTitle: "",
-  token: "",
+  token:
+    process.env.NODE_ENV === "development"
+      ? "iS8-UL8EgjPwjFyauK4ne97NhXG5fCoZnyhS"
+      : "",
   notification: {
     visibility: false,
     type: "",
@@ -44,10 +48,16 @@ const handlers = {
       notification: payload,
     };
   },
-  [homeTypes.FETCH]: (state, payload) => {
+  [homeTypes.FETCH_START]: (state, payload) => {
     return {
       ...state,
-      fetch: payload,
+      fetch: true,
+    };
+  },
+  [homeTypes.FETCH_END]: (state, payload) => {
+    return {
+      ...state,
+      fetch: false,
     };
   },
   DEFAULT: (state) => state,
