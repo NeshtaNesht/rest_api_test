@@ -9,6 +9,7 @@ import {
   Paper,
   withStyles,
   TableFooter,
+  makeStyles,
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 
@@ -27,10 +28,25 @@ const StyledTableRow = withStyles((theme) => ({
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
     },
+    hover: {
+      "&:hover": {
+        cursor: "pointer",
+      },
+    },
   },
 }))(TableRow);
 
+const useStyles = makeStyles((theme) => ({
+  hover: {
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
+}));
+
 const Lists = ({ data, onChangePage, table }) => {
+  const classes = useStyles();
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -43,7 +59,11 @@ const Lists = ({ data, onChangePage, table }) => {
         </TableHead>
         <TableBody>
           {data.result.map((d, key) => (
-            <StyledTableRow key={key}>
+            <StyledTableRow
+              key={key}
+              onClick={() => onClickRow(d)}
+              className={classes.hover}
+            >
               {table.keyValue.map((v, k) => (
                 <StyledTableCell key={k}>{d[v]}</StyledTableCell>
               ))}
