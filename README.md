@@ -10,3 +10,8 @@
 
 ### Notice:
 - Стейт всего приложения (например, вызов notification и заголовок) находится в homeReducer
+
+## Установка:
+- Скопировать репозиторий: **git clone https://github.com/NeshtaNesht/rest_api_test.git "folder"**
+- Установить node_modules: **npm install**
+- Запустить приложение: **npm start**
