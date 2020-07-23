@@ -5,6 +5,7 @@ import { setTitle } from "./Home/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import Card from "./Card";
+import NotFound from "./NotFound";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,13 @@ const App = () => {
         render={() => {
           handlerChangeTitle("Карточка объекта");
           return <Card />;
+        }}
+      />
+      <Route
+        path="*"
+        render={() => {
+          handlerChangeTitle("404 :(");
+          return <NotFound />;
         }}
       />
     </Switch>

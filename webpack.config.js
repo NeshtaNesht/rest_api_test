@@ -1,5 +1,4 @@
 const path = require("path");
-require("es6-promise").polyfill();
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 
