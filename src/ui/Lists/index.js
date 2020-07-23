@@ -10,8 +10,12 @@ import {
   withStyles,
   TableFooter,
   makeStyles,
+  Icon,
+  Button,
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import { Link } from "react-router-dom";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -39,12 +43,19 @@ const StyledTableRow = withStyles((theme) => ({
 const useStyles = makeStyles((theme) => ({
   hover: {
     "&:hover": {
-      cursor: "pointer",
+      // cursor: "pointer",
     },
   },
 }));
 
-const Lists = ({ data, onChangePage, table }) => {
+const Lists = ({
+  data,
+  onChangePage,
+  table,
+  onClickRow,
+  isRedirect,
+  toRedirect,
+}) => {
   const classes = useStyles();
 
   return (
@@ -55,18 +66,24 @@ const Lists = ({ data, onChangePage, table }) => {
             {table.headersName.map((v, k) => (
               <StyledTableCell key={k}>{v}</StyledTableCell>
             ))}
+            <StyledTableCell>Действия</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>
           {data.result.map((d, key) => (
             <StyledTableRow
               key={key}
-              onClick={() => onClickRow(d)}
+              onClick={(e) => onClickRow(e, d)}
               className={classes.hover}
             >
               {table.keyValue.map((v, k) => (
                 <StyledTableCell key={k}>{d[v]}</StyledTableCell>
               ))}
+              <StyledTableCell>
+                <Link to={`${toRedirect}/${d.id}`}>
+                  <VisibilityIcon />
+                </Link>
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
@@ -82,14 +99,12 @@ const Lists = ({ data, onChangePage, table }) => {
           </TableRow>
         </TableFooter>
       </Table>
-      <div>
-        <Pagination
-          count={data._meta.pageCount}
-          color="primary"
-          size="large"
-          onChange={onChangePage}
-        />
-      </div>
+      <Pagination
+        count={data._meta.pageCount}
+        color="primary"
+        size="large"
+        onChange={onChangePage}
+      />
     </TableContainer>
   );
 };

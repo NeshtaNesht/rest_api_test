@@ -35,7 +35,7 @@ const middlewares = [thunk, logger];
 
 const store = createStore(
   rootReducer,
-  //prevState,
+  prevState,
   composeWithDevTools(applyMiddleware(...middlewares))
 );
 

@@ -15,6 +15,7 @@ const initialState = {
     message: "",
   },
   fetch: false,
+  activeTab: null,
 };
 
 const handlers = {
@@ -58,6 +59,12 @@ const handlers = {
     return {
       ...state,
       fetch: false,
+    };
+  },
+  [homeTypes.SET_ACTIVE_TAB]: (state, payload) => {
+    return {
+      ...state,
+      activeTab: payload,
     };
   },
   DEFAULT: (state) => state,

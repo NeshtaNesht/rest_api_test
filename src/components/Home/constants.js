@@ -7,4 +7,5 @@ export const homeTypes = {
   FETCH_END: "FETCH_END",
   SET_USERS: "SET_USERS",
   SET_POSTS: "SET_POSTS",
+  SET_ACTIVE_TAB: "SET_ACTIVE_TAB",
 };

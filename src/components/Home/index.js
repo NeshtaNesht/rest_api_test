@@ -13,16 +13,19 @@ import {
   setFetch,
   fetchGetPosts,
   fetchGetUsers,
+  getPostsByUser,
+  setActiveTab,
 } from "./actions";
 import Lists from "../../ui/Lists";
+import { setCard } from "../Card/actions";
 
 const Home = () => {
   const token = useSelector((state) => state.homeReducer.token);
   const users = useSelector((state) => state.homeReducer.users);
   const posts = useSelector((state) => state.homeReducer.posts);
   const fetch = useSelector((state) => state.homeReducer.fetch);
+  const activeTab = useSelector((state) => state.homeReducer.activeTab);
   const dispatch = useDispatch();
-  const [tableVis, setTableVis] = useState("users");
 
   const getData = () => {
     getPosts();
@@ -39,9 +42,13 @@ const Home = () => {
   const controls = (
     <div>
       {users && (
-        <Button onClick={() => setTableVis("users")}>Пользователи</Button>
+        <Button onClick={() => dispatch(setActiveTab("users"))}>
+          Пользователи
+        </Button>
       )}
-      {posts && <Button onClick={() => setTableVis("posts")}>Посты</Button>}
+      {posts && (
+        <Button onClick={() => dispatch(setActiveTab("posts"))}>Посты</Button>
+      )}
     </div>
   );
 
@@ -85,13 +92,18 @@ const Home = () => {
       )}
       {controls}
 
-      {users && (
+      {activeTab && (
         <Lists
-          data={tableVis == "users" ? users : posts}
-          table={tableVis == "users" ? tableUsers : tablePosts}
+          data={activeTab == "users" ? users : posts}
+          table={activeTab == "users" ? tableUsers : tablePosts}
           onChangePage={(e, p) =>
-            tableVis === "users" ? getUsers(p) : getPosts(p)
+            activeTab === "users" ? getUsers(p) : getPosts(p)
           }
+          onClickRow={(e, data) => {
+            dispatch(setCard(data));
+          }}
+          isRedirect={true}
+          toRedirect="/card"
         />
       )}
     </div>

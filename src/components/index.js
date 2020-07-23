@@ -5,6 +5,7 @@ import Home from "./Home";
 import { setTitle } from "./Home/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
+import Card from "./Card";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -33,6 +34,13 @@ const App = () => {
         render={() => {
           dispatch(setTitle("Главная страница"));
           return <Home />;
+        }}
+      />
+      <Route
+        path="/card/:id"
+        render={() => {
+          dispatch(setTitle("Карточка объекта"));
+          return <Card />;
         }}
       />
     </Switch>

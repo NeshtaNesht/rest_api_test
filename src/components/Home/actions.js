@@ -54,17 +54,10 @@ export const setPosts = (data) => {
   };
 };
 
-// export const getData = () => {
-//   return (dispatch) => {
-//     try {
-//       dispatch(setFetch());
-//       fetchUsers(dispatch);
-//       fetchPosts(dispatch);
-//     } finally {
-//       dispatch(setFetch());
-//     }
-//   };
-// };
+export const setActiveTab = (nameTab) => ({
+  type: homeTypes.SET_ACTIVE_TAB,
+  payload: nameTab,
+});
 
 export const fetchGetUsers = (pageNumber = 0) => {
   return (dispatch) => {
