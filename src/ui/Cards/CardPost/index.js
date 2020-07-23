@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   Paper,
   Typography,
@@ -9,6 +10,12 @@ import {
   ListItemText,
 } from "@material-ui/core";
 
+/**
+ * Карточка постов
+ * @param {object} activeCard Активная карточка
+ * @param {bool} fetch Флаг запроса
+ * @param {Array of objects} comments Массив объектов с комментариями
+ */
 const CardPost = ({ activeCard, fetch, comments }) => {
   return (
     <>
@@ -40,4 +47,20 @@ const CardPost = ({ activeCard, fetch, comments }) => {
     </>
   );
 };
+
+CardPost.propTypes = {
+  activeCard: PropTypes.object,
+  fetch: PropTypes.bool,
+  comments: PropTypes.arrayOf(
+    PropTypes.shape({
+      body: PropTypes.string,
+      email: PropTypes.string,
+      id: PropTypes.string,
+      name: PropTypes.string,
+      post_id: PropTypes.string,
+      _links: PropTypes.object,
+    })
+  ),
+};
+
 export default CardPost;

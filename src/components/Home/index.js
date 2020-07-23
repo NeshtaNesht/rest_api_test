@@ -1,19 +1,15 @@
-import React, { useState } from "react";
+import React, { useCallback } from "react";
 import {
   TextField,
   Button,
-  List,
   Toolbar,
   CircularProgress,
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  setNotification,
   setToken,
-  setFetch,
   fetchGetPosts,
   fetchGetUsers,
-  getPostsByUser,
   setActiveTab,
 } from "./actions";
 import Lists from "../../ui/Lists";
@@ -25,19 +21,37 @@ const Home = () => {
   const posts = useSelector((state) => state.homeReducer.posts);
   const fetch = useSelector((state) => state.homeReducer.fetch);
   const activeTab = useSelector((state) => state.homeReducer.activeTab);
+
   const dispatch = useDispatch();
 
-  const getData = () => {
-    getPosts();
-    getUsers();
-  };
+  const handlerGetData = useCallback(() => {
+    handlerGetPosts();
+    handlerGetUsers();
+  });
 
-  const getPosts = (p = 0) => {
+  const handlerGetPostOrUsers = useCallback((e, p = 0) => {
+    if (activeTab === "users") {
+      handlerGetUsers(p);
+    } else {
+      handlerGetPosts(p);
+    }
+  });
+
+  const handlerGetPosts = useCallback((p = 0) => {
     dispatch(fetchGetPosts(p));
-  };
-  const getUsers = (p = 0) => {
+  });
+
+  const handlerGetUsers = useCallback((p = 0) => {
     dispatch(fetchGetUsers(p));
-  };
+  });
+
+  const handlerSetToken = useCallback((e) => {
+    dispatch(setToken(e.target.value));
+  });
+
+  const handlerSetCard = useCallback((e, data) => {
+    dispatch(setCard(data));
+  });
 
   const controls = (
     <div>
@@ -57,7 +71,7 @@ const Home = () => {
     headersName: ["Фамилия", "Имя", "Email"],
     keyValue: ["last_name", "first_name", "email"],
   };
-
+  // Наименование заголовков для Posts и ключи
   const tablePosts = {
     headersName: ["ID", "Наименование"],
     keyValue: ["id", "title"],
@@ -68,13 +82,14 @@ const Home = () => {
         label="Введите Access Token"
         variant="outlined"
         value={token}
-        onChange={(e) => dispatch(setToken(e.target.value))}
+        onChange={handlerSetToken}
       />
       <Button
         variant="contained"
         color="primary"
-        onClick={getData}
+        onClick={handlerGetData}
         disabled={!token}
+        style={{ margin: "10px 0 0 30px" }}
       >
         Применить
       </Button>
@@ -96,13 +111,8 @@ const Home = () => {
         <Lists
           data={activeTab == "users" ? users : posts}
           table={activeTab == "users" ? tableUsers : tablePosts}
-          onChangePage={(e, p) =>
-            activeTab === "users" ? getUsers(p) : getPosts(p)
-          }
-          onClickRow={(e, data) => {
-            dispatch(setCard(data));
-          }}
-          isRedirect={true}
+          onChangePage={handlerGetPostOrUsers}
+          onClickRow={handlerSetCard}
           toRedirect="/card"
         />
       )}

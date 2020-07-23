@@ -5,10 +5,7 @@ const initialState = {
   users: null,
   posts: null,
   appTitle: "",
-  token:
-    process.env.NODE_ENV === "development"
-      ? "iS8-UL8EgjPwjFyauK4ne97NhXG5fCoZnyhS"
-      : "",
+  token: "",
   notification: {
     visibility: false,
     type: "",

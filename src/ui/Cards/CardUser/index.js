@@ -1,18 +1,39 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
-  Paper,
   Typography,
   makeStyles,
   CircularProgress,
-  List,
-  ListItem,
+  Avatar,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 
-const CardUser = ({ activeCard, fetch, userPosts }) => {
+const useStyles = makeStyles({
+  href: {
+    textDecoration: "none",
+  },
+});
+
+/**
+ * Карточка пользователя
+ * @param {object} activeCard Карточка
+ * @param {bool} fetch Флаг запроса
+ * @param {Array of objects} userPosts Массив постов пользователя
+ * @param {string} toPostRedirect Ссылка куда переходить по нажатию на пост
+ * @param {func} onLinkClick Обработчик нажатия на пост
+ */
+const CardUser = ({
+  activeCard,
+  fetch,
+  userPosts,
+  toPostRedirect,
+  onLinkClick,
+}) => {
+  const classes = useStyles();
   return (
     <>
       <Typography variant="h4">
+        <Avatar src={activeCard._links.avatar.href} />
         {`${activeCard.first_name} ${activeCard.last_name}`}
       </Typography>
       <Typography>
@@ -35,17 +56,38 @@ const CardUser = ({ activeCard, fetch, userPosts }) => {
       {fetch ? (
         <CircularProgress />
       ) : (
-        <List>
+        <ul>
           {userPosts.map((v, k) => {
             return (
-              <Link key={k} to="/">
-                <ListItem>{v.title}</ListItem>
+              <Link
+                key={k}
+                to={toPostRedirect}
+                onClick={() => onLinkClick(v)}
+                className={classes.href}
+              >
+                <li style={{ padding: 10, fontSize: 18 }}>{v.title}</li>
               </Link>
             );
           })}
-        </List>
+        </ul>
       )}
     </>
   );
+};
+
+CardUser.propTypes = {
+  activeCard: PropTypes.object,
+  fetch: PropTypes.bool,
+  userPosts: PropTypes.arrayOf(
+    PropTypes.shape({
+      body: PropTypes.string,
+      id: PropTypes.string,
+      title: PropTypes.string,
+      user_id: PropTypes.string,
+      _links: PropTypes.object,
+    })
+  ),
+  toPostRedirect: PropTypes.string,
+  onLinkClick: PropTypes.func,
 };
 export default CardUser;

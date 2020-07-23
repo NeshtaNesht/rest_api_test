@@ -1,5 +1,4 @@
-// Тут роутинг
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { Switch, Route } from "react-router-dom";
 import Home from "./Home";
 import { setTitle } from "./Home/actions";
@@ -9,8 +8,14 @@ import Card from "./Card";
 
 const App = () => {
   const dispatch = useDispatch();
+
   const { enqueueSnackbar } = useSnackbar();
+
   const notification = useSelector((state) => state.homeReducer.notification);
+
+  const handlerChangeTitle = useCallback((title) => {
+    dispatch(setTitle(title));
+  });
 
   const handleSnackBar = () => () => {
     enqueueSnackbar(notification.message, {
@@ -32,14 +37,14 @@ const App = () => {
         path="/"
         exact
         render={() => {
-          dispatch(setTitle("Главная страница"));
+          handlerChangeTitle("Главная страница");
           return <Home />;
         }}
       />
       <Route
-        path="/card/:id"
+        path="/card"
         render={() => {
-          dispatch(setTitle("Карточка объекта"));
+          handlerChangeTitle("Карточка объекта");
           return <Card />;
         }}
       />

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   TableContainer,
   Table,
@@ -8,10 +9,7 @@ import {
   TableCell,
   Paper,
   withStyles,
-  TableFooter,
   makeStyles,
-  Icon,
-  Button,
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import VisibilityIcon from "@material-ui/icons/Visibility";
@@ -40,7 +38,7 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   hover: {
     "&:hover": {
       // cursor: "pointer",
@@ -48,16 +46,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Lists = ({
-  data,
-  onChangePage,
-  table,
-  onClickRow,
-  isRedirect,
-  toRedirect,
-}) => {
-  const classes = useStyles();
+/**
+ * Выводит список объектов data
+ * @param {Array of objects} data Массив с объектами для вывода
+ * @param {func} onChangePage Обработка смены страницы (пагинация)
+ * @param {Object} table Массив с объектами для настройки таблицы
+ * @param {func} onClickRow Обработка клика по строке
+ * @param {string} toRedirect Куда переходить при нажатии на строку
+ */
 
+const Lists = ({ data, onChangePage, table, onClickRow, toRedirect }) => {
+  const classes = useStyles();
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -80,24 +79,13 @@ const Lists = ({
                 <StyledTableCell key={k}>{d[v]}</StyledTableCell>
               ))}
               <StyledTableCell>
-                <Link to={`${toRedirect}/${d.id}`}>
+                <Link to={`${toRedirect}`}>
                   <VisibilityIcon />
                 </Link>
               </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            {/* <TablePagination
-               rowsPerPage={data._meta.perPage}
-               count={data._meta.totalCount}
-               page={data._meta.currentPage - 1}
-               rowsPerPageOptions={[data._meta.perPage]}
-               onChangePage={(e, p) => onChangePage(e, p)}
-             />  */}
-          </TableRow>
-        </TableFooter>
       </Table>
       <Pagination
         count={data._meta.pageCount}
@@ -107,5 +95,16 @@ const Lists = ({
       />
     </TableContainer>
   );
+};
+
+Lists.propTypes = {
+  data: PropTypes.object,
+  onChangePage: PropTypes.func,
+  table: PropTypes.shape({
+    headersName: PropTypes.array,
+    keyValue: PropTypes.array,
+  }),
+  onClickRow: PropTypes.func,
+  toRedirect: PropTypes.string,
 };
 export default Lists;

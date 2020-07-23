@@ -10,6 +10,7 @@ export const setTitle = (title) => {
   };
 };
 
+// Установка токена
 export const setToken = (token) => {
   return {
     type: homeTypes.SET_TOKEN,
@@ -17,6 +18,7 @@ export const setToken = (token) => {
   };
 };
 
+// Установка notification
 export const setNotification = (type, message, visibility) => {
   return {
     type: homeTypes.SET_NOTIFICATION,
@@ -28,18 +30,21 @@ export const setNotification = (type, message, visibility) => {
   };
 };
 
+// Action-creator начала запроса
 export const fetchStarted = () => {
   return {
     type: homeTypes.FETCH_START,
   };
 };
 
+// Action-creator окончания запроса
 export const fetchEnded = () => {
   return {
     type: homeTypes.FETCH_END,
   };
 };
 
+// Установка пользователя
 export const setUsers = (data) => {
   return {
     type: homeTypes.SET_USERS,
@@ -47,6 +52,7 @@ export const setUsers = (data) => {
   };
 };
 
+// Установка постов
 export const setPosts = (data) => {
   return {
     type: homeTypes.SET_POSTS,
@@ -54,14 +60,18 @@ export const setPosts = (data) => {
   };
 };
 
+// Установка активного таба (в данном случае кнопки)
 export const setActiveTab = (nameTab) => ({
   type: homeTypes.SET_ACTIVE_TAB,
   payload: nameTab,
 });
 
+// Запрос на получение списка пользователей
 export const fetchGetUsers = (pageNumber = 0) => {
   return (dispatch) => {
+    // Запрос начался
     dispatch(fetchStarted());
+    // Делаем гет запрос
     axios({
       method: "GET",
       url: `https://gorest.co.in/public-api/users?page=${pageNumber}&access-token=${
@@ -70,6 +80,7 @@ export const fetchGetUsers = (pageNumber = 0) => {
     })
       .then((res) => {
         if (res.data._meta.success === false) {
+          // Если от сервера что-то не то пришло, вываливаем ошибку
           dispatch(
             setNotification(
               "error",

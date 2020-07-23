@@ -2,29 +2,35 @@ import { cardTypes } from "./constants";
 import axios from "axios";
 import store from "../../store";
 
+// Установка активной карточки
 export const setCard = (obj) => ({
   type: cardTypes.SET_ACTIVE_CARD,
   payload: obj,
 });
 
+// Установка постов пользователя
 export const setUserPosts = (posts) => ({
   type: cardTypes.SET_CURRENT_USER_POSTS,
   payload: posts,
 });
 
+// Установка комментариев поста
 export const setPostComments = (comments) => ({
   type: cardTypes.SET_CURRENT_POST_COMMENTS,
   payload: comments,
 });
 
+// Action-creator начала запроса на посты пользователя
 export const fetchUserPostsStart = () => ({
   type: cardTypes.FETCH_USER_POSTS,
 });
 
+// Action-creator окончания запроса на посты пользователя
 export const fetchUserPostsEnd = () => ({
   type: cardTypes.FETCH_END,
 });
 
+// Запрос на получение постов пользователя
 export const fetchPostsByUser = () => {
   return (dispatch) => {
     dispatch(fetchUserPostsStart());
@@ -50,6 +56,7 @@ export const fetchPostsByUser = () => {
   };
 };
 
+// Запрос на получение комментариев поста
 export const fetchCommentsByPost = () => {
   return (dispatch) => {
     dispatch(fetchUserPostsStart());

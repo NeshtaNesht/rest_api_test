@@ -7,7 +7,6 @@ import App from "./components";
 import Layout from "./layout";
 import { render } from "react-dom";
 import "./style.css";
-import { SnackbarProvider } from "notistack";
 
 const history = createBrowserHistory();
 
