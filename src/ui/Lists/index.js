@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import Edit from "@material-ui/icons/Edit";
 import { Link } from "react-router-dom";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -40,8 +41,12 @@ const StyledTableRow = withStyles((theme) => ({
 
 const useStyles = makeStyles(() => ({
   hover: {
+    marginLeft: "10px",
     "&:hover": {
-      // cursor: "pointer",
+      cursor: "pointer",
+    },
+    "&:active": {
+      color: "red",
     },
   },
 }));
@@ -55,7 +60,15 @@ const useStyles = makeStyles(() => ({
  * @param {string} toRedirect Куда переходить при нажатии на строку
  */
 
-const Lists = ({ data, onChangePage, table, onClickRow, toRedirect }) => {
+const Lists = ({
+  data,
+  onChangePage,
+  table,
+  onClickRow,
+  toRedirect,
+  isEdit,
+  onChangeItemClick,
+}) => {
   const classes = useStyles();
   return (
     <TableContainer component={Paper}>
@@ -70,18 +83,20 @@ const Lists = ({ data, onChangePage, table, onClickRow, toRedirect }) => {
         </TableHead>
         <TableBody>
           {data.result.map((d, key) => (
-            <StyledTableRow
-              key={key}
-              onClick={(e) => onClickRow(e, d)}
-              className={classes.hover}
-            >
+            <StyledTableRow key={key}>
               {table.keyValue.map((v, k) => (
                 <StyledTableCell key={k}>{d[v]}</StyledTableCell>
               ))}
               <StyledTableCell>
                 <Link to={`${toRedirect}`}>
-                  <VisibilityIcon />
+                  <VisibilityIcon onClick={(e) => onClickRow(e, d)} />
                 </Link>
+                {isEdit && (
+                  <Edit
+                    className={classes.hover}
+                    onClick={() => onChangeItemClick(d)}
+                  />
+                )}
               </StyledTableCell>
             </StyledTableRow>
           ))}

@@ -12,6 +12,7 @@ import {
   fetchGetUsers,
   setActiveTab,
   fetchPostPost,
+  fetchUpdatePost,
 } from "./actions";
 import Lists from "../../ui/Lists";
 import { setCard } from "../Card/actions";
@@ -25,6 +26,7 @@ const Home = () => {
   const activeTab = useSelector((state) => state.homeReducer.activeTab);
 
   const [modalVisibility, setVisibility] = useState(false);
+  const [changedData, setChangedData] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -58,9 +60,18 @@ const Home = () => {
   });
 
   const handlerSaveNewPost = useCallback((data) => {
-    console.log(data);
     dispatch(fetchPostPost(data));
   });
+
+  const handlerChangePost = useCallback((data) => {
+    dispatch(fetchUpdatePost(data));
+    setChangedData(null);
+  });
+
+  const clickChangePost = (data) => {
+    setChangedData(data);
+    setVisibility(true);
+  };
 
   const controls = (
     <div>
@@ -78,8 +89,12 @@ const Home = () => {
   const modal = (
     <AddPostModal
       visibility={modalVisibility}
-      onCloseModal={() => setVisibility(false)}
-      onSaveModal={handlerSaveNewPost}
+      onCloseModal={() => {
+        setVisibility(false);
+        setChangedData(null);
+      }}
+      onSaveModal={changedData ? handlerChangePost : handlerSaveNewPost}
+      data={changedData}
     />
   );
 
@@ -115,6 +130,7 @@ const Home = () => {
         variant="contained"
         color="secondary"
         onClick={() => setVisibility(!modalVisibility)}
+        disabled={!token}
         style={{ margin: "10px 0 0 30px" }}
       >
         Добавить пост
@@ -140,6 +156,8 @@ const Home = () => {
           onChangePage={handlerGetPostOrUsers}
           onClickRow={handlerSetCard}
           toRedirect="/card"
+          isEdit={activeTab == "users" ? false : true}
+          onChangeItemClick={clickChangePost}
         />
       )}
     </div>

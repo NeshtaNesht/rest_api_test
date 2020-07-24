@@ -25,7 +25,7 @@ const Layout = ({ children }) => {
   const appTitle = useSelector((state) => state.homeReducer.appTitle);
 
   return (
-    <SnackbarProvider maxSnack={3}>
+    <SnackbarProvider maxSnack={2}>
       <Appbar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap>

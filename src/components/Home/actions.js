@@ -94,7 +94,7 @@ export const fetchGetUsers = (pageNumber = 0) => {
         }
       })
       .catch((e) => {
-        console.log(e);
+        //console.log(e);
         dispatch(setNotification("error", e, true));
       })
       .finally(() => {
@@ -126,7 +126,6 @@ export const fetchGetPosts = (pageNumber) => {
         }
       })
       .catch((e) => {
-        console.log(e);
         dispatch(setNotification("error", e, true));
       })
       .finally(() => {
@@ -146,10 +145,48 @@ export const fetchPostPost = (data) => {
       data,
     })
       .then((res) => {
-        console.log(res);
+        if (res.data._meta.success === false) {
+          dispatch(
+            setNotification("error", "Не удалось добавить запись", true)
+          );
+        } else {
+          dispatch(setNotification("success", `Пост добавлен`, true));
+        }
       })
       .catch((e) => {
-        console.log(e);
+        dispatch(setNotification("error", e, true));
+      })
+      .finally(() => {
+        dispatch(fetchEnded());
+      });
+  };
+};
+
+export const fetchUpdatePost = (data) => {
+  return (dispatch) => {
+    dispatch(fetchStarted());
+    axios({
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${store.getState().homeReducer.token}`,
+      },
+      url: `https://gorest.co.in/public-api/posts/${data.id}`,
+      data,
+    })
+      .then((res) => {
+        if (res.data._meta.success === false) {
+          dispatch(
+            setNotification("error", "Не удалось обновить запись", true)
+          );
+        } else {
+          dispatch(setNotification("success", `Пост обновлен`, true));
+          dispatch(
+            fetchGetPosts(store.getState().homeReducer.posts._meta.currentPage)
+          );
+        }
+      })
+      .catch((e) => {
+        dispatch(setNotification("error", e.message, true));
       })
       .finally(() => {
         dispatch(fetchEnded());

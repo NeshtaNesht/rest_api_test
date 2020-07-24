@@ -1,17 +1,23 @@
-import React, { useRef } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import {
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
-  FormControl,
 } from "@material-ui/core";
 import { Formik, Form, Field } from "formik";
 import { TextField as TextFieldFormik } from "formik-material-ui";
 
-const AddPostModal = ({ visibility, onCloseModal, onSaveModal }) => {
+/**
+ * Добавление/изменение постов
+ * @param {bool} visibility Видимость окна
+ * @param {func} onCloseModal Функция закрытия окна
+ * @param {func} onSaveModal Функция сохранения
+ * @param {object} data Объект для редактирования
+ */
+const AddPostModal = ({ visibility, onCloseModal, onSaveModal, data }) => {
   return (
     <div>
       <Dialog
@@ -24,9 +30,10 @@ const AddPostModal = ({ visibility, onCloseModal, onSaveModal }) => {
         <DialogTitle id="form-dialog-title">Новый пост</DialogTitle>
         <Formik
           initialValues={{
-            title: "",
-            user_id: "",
-            body: "",
+            title: !!data ? data.title : "",
+            user_id: !!data ? data.user_id : "",
+            body: !!data ? data.body : "",
+            id: !!data ? data.id : "",
           }}
           onSubmit={(values, { setSubmiting }) => {
             onSaveModal(values);
@@ -69,34 +76,16 @@ const AddPostModal = ({ visibility, onCloseModal, onSaveModal }) => {
             </>
           )}
         />
-
-        {/* <form onSubmit={onSaveModal}>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="title"
-              label="Заголовок"
-              fullWidth
-              type="input"
-            />
-            <TextField
-              type="number"
-              id="user_id"
-              label="ID пользователя"
-              fullWidth
-            />
-            <TextField
-              label="Текст поста"
-              id="body"
-              multiline
-              rowsMax={10}
-              rows={5}
-              fullWidth
-            />
-          </form> */}
       </Dialog>
     </div>
   );
+};
+
+AddPostModal.propTypes = {
+  visibility: PropTypes.bool,
+  onCloseModal: PropTypes.func,
+  onSaveModal: PropTypes.func,
+  data: PropTypes.object,
 };
 
 export default AddPostModal;
