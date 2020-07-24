@@ -92,6 +92,7 @@ const Lists = ({ data, onChangePage, table, onClickRow, toRedirect }) => {
         color="primary"
         size="large"
         onChange={onChangePage}
+        page={data._meta.currentPage}
       />
     </TableContainer>
   );
