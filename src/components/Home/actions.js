@@ -145,12 +145,17 @@ export const fetchPostPost = (data) => {
       data,
     })
       .then((res) => {
-        if (res.data._meta.success === false) {
+        console.log(res.data._meta.success);
+
+        if (!res.data._meta.success === false) {
           dispatch(
             setNotification("error", "Не удалось добавить запись", true)
           );
         } else {
           dispatch(setNotification("success", `Пост добавлен`, true));
+          dispatch(
+            fetchGetPosts(store.getState().homeReducer.posts._meta.currentPage)
+          );
         }
       })
       .catch((e) => {
@@ -174,7 +179,7 @@ export const fetchUpdatePost = (data) => {
       data,
     })
       .then((res) => {
-        if (res.data._meta.success === false) {
+        if (res.data._meta.success == false) {
           dispatch(
             setNotification("error", "Не удалось обновить запись", true)
           );
