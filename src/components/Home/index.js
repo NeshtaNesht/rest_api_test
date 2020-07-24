@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   TextField,
   Button,
@@ -11,9 +11,11 @@ import {
   fetchGetPosts,
   fetchGetUsers,
   setActiveTab,
+  fetchPostPost,
 } from "./actions";
 import Lists from "../../ui/Lists";
 import { setCard } from "../Card/actions";
+import AddPostModal from "./AddPostModal";
 
 const Home = () => {
   const token = useSelector((state) => state.homeReducer.token);
@@ -21,6 +23,8 @@ const Home = () => {
   const posts = useSelector((state) => state.homeReducer.posts);
   const fetch = useSelector((state) => state.homeReducer.fetch);
   const activeTab = useSelector((state) => state.homeReducer.activeTab);
+
+  const [modalVisibility, setVisibility] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -53,6 +57,11 @@ const Home = () => {
     dispatch(setCard(data));
   });
 
+  const handlerSaveNewPost = useCallback((data) => {
+    console.log(data);
+    dispatch(fetchPostPost(data));
+  });
+
   const controls = (
     <div>
       {users && (
@@ -64,6 +73,14 @@ const Home = () => {
         <Button onClick={() => dispatch(setActiveTab("posts"))}>Посты</Button>
       )}
     </div>
+  );
+
+  const modal = (
+    <AddPostModal
+      visibility={modalVisibility}
+      onCloseModal={() => setVisibility(false)}
+      onSaveModal={handlerSaveNewPost}
+    />
   );
 
   // Наименования заголовков для Users и ключи доступа к данным
@@ -78,6 +95,7 @@ const Home = () => {
   };
   return (
     <div style={{ textAlign: "center" }}>
+      {modal}
       <TextField
         label="Введите Access Token"
         variant="outlined"
@@ -92,6 +110,14 @@ const Home = () => {
         style={{ margin: "10px 0 0 30px" }}
       >
         Применить
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => setVisibility(!modalVisibility)}
+        style={{ margin: "10px 0 0 30px" }}
+      >
+        Добавить пост
       </Button>
       <Toolbar />
       {/* Есть запрос ? Показываем циркулярку */}

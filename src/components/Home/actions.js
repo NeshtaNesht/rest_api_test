@@ -134,3 +134,25 @@ export const fetchGetPosts = (pageNumber) => {
       });
   };
 };
+
+export const fetchPostPost = (data) => {
+  return (dispatch) => {
+    dispatch(fetchStarted());
+    axios({
+      method: "POST",
+      url: `https://gorest.co.in/public-api/posts?access-token=${
+        store.getState().homeReducer.token
+      }`,
+      data,
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+      .finally(() => {
+        dispatch(fetchEnded());
+      });
+  };
+};
