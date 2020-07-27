@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   TableContainer,
@@ -70,6 +70,28 @@ const Lists = ({
   onChangeItemClick,
 }) => {
   const classes = useStyles();
+  const d = useMemo(
+    () =>
+      data.result.map((d, key) => (
+        <StyledTableRow key={key}>
+          {table.keyValue.map((v, k) => (
+            <StyledTableCell key={k}>{d[v]}</StyledTableCell>
+          ))}
+          <StyledTableCell>
+            <Link to={`${toRedirect}`}>
+              <VisibilityIcon onClick={(e) => onClickRow(e, d)} />
+            </Link>
+            {isEdit && (
+              <Edit
+                className={classes.hover}
+                onClick={() => onChangeItemClick(d)}
+              />
+            )}
+          </StyledTableCell>
+        </StyledTableRow>
+      )),
+    [data, table]
+  );
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -81,26 +103,7 @@ const Lists = ({
             <StyledTableCell>Действия</StyledTableCell>
           </StyledTableRow>
         </TableHead>
-        <TableBody>
-          {data.result.map((d, key) => (
-            <StyledTableRow key={key}>
-              {table.keyValue.map((v, k) => (
-                <StyledTableCell key={k}>{d[v]}</StyledTableCell>
-              ))}
-              <StyledTableCell>
-                <Link to={`${toRedirect}`}>
-                  <VisibilityIcon onClick={(e) => onClickRow(e, d)} />
-                </Link>
-                {isEdit && (
-                  <Edit
-                    className={classes.hover}
-                    onClick={() => onChangeItemClick(d)}
-                  />
-                )}
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
+        <TableBody>{d}</TableBody>
       </Table>
       <Pagination
         count={data._meta.pageCount}

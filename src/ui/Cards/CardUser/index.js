@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   Typography,
@@ -30,6 +30,23 @@ const CardUser = ({
   onLinkClick,
 }) => {
   const classes = useStyles();
+
+  const posts = useMemo(
+    () =>
+      userPosts.map((v, k) => {
+        return (
+          <Link
+            key={k}
+            to={toPostRedirect}
+            onClick={() => onLinkClick(v)}
+            className={classes.href}
+          >
+            <li style={{ padding: 10, fontSize: 18 }}>{v.title}</li>
+          </Link>
+        );
+      }),
+    [userPosts]
+  );
   return (
     <>
       <Typography variant="h4">
@@ -52,25 +69,9 @@ const CardUser = ({
         <b>Телефон:</b> {activeCard.phone}
       </Typography>
       <b>Посты пользователя:</b>
+      {posts}
       <br />
-      {fetch ? (
-        <CircularProgress />
-      ) : (
-        <ul>
-          {userPosts.map((v, k) => {
-            return (
-              <Link
-                key={k}
-                to={toPostRedirect}
-                onClick={() => onLinkClick(v)}
-                className={classes.href}
-              >
-                <li style={{ padding: 10, fontSize: 18 }}>{v.title}</li>
-              </Link>
-            );
-          })}
-        </ul>
-      )}
+      {fetch ? <CircularProgress /> : <ul></ul>}
     </>
   );
 };

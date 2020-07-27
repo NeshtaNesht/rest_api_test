@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   Paper,
@@ -17,33 +17,33 @@ import {
  * @param {Array of objects} comments Массив объектов с комментариями
  */
 const CardPost = ({ activeCard, fetch, comments }) => {
+  const comment = useMemo(
+    () =>
+      comments.map((v, k) => {
+        return (
+          <div key={k}>
+            <ListItem>
+              <ListItemText>
+                <b>{v.name}</b>
+              </ListItemText>
+              <ListItemText>
+                <b>{v.email}</b>
+              </ListItemText>
+            </ListItem>
+            <Typography>{v.body}</Typography>
+          </div>
+        );
+      }),
+    [comments]
+  );
   return (
     <>
       <Typography variant="h4">{`${activeCard.title}`}</Typography>
       <Typography>{activeCard.body}</Typography>
       <b>Комментарии:</b>
+      {comment}
       <br />
-      {fetch ? (
-        <CircularProgress />
-      ) : (
-        <List>
-          {comments.map((v, k) => {
-            return (
-              <div key={k}>
-                <ListItem>
-                  <ListItemText>
-                    <b>{v.name}</b>
-                  </ListItemText>
-                  <ListItemText>
-                    <b>{v.email}</b>
-                  </ListItemText>
-                </ListItem>
-                <Typography>{v.body}</Typography>
-              </div>
-            );
-          })}
-        </List>
-      )}
+      {fetch ? <CircularProgress /> : <List></List>}
     </>
   );
 };

@@ -139,18 +139,16 @@ export const fetchPostPost = (data) => {
     dispatch(fetchStarted());
     axios({
       method: "POST",
-      url: `https://gorest.co.in/public-api/posts?access-token=${
-        store.getState().homeReducer.token
-      }`,
+      url: `https://gorest.co.in/public-api/posts`,
       data,
+      headers: {
+        Authorization: `Bearer ${store.getState().homeReducer.token}`,
+      },
     })
       .then((res) => {
         console.log(res.data._meta.success);
-
-        if (!res.data._meta.success === false) {
-          dispatch(
-            setNotification("error", "Не удалось добавить запись", true)
-          );
+        if (res.data._meta.success === false) {
+          dispatch(setNotification("error", res.data._meta.message, true));
         } else {
           dispatch(setNotification("success", `Пост добавлен`, true));
           dispatch(
